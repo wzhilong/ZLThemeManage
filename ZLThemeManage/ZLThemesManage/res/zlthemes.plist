@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>night</key>
+	<dict>
+		<key>vc</key>
+		<dict>
+			<key>bg</key>
+            <string>#0000ff</string>
+			<key>nav_bg</key>
+            <string>#ff0000</string>
+		</dict>
+	</dict>
+	<key>normal</key>
+    <dict>
+        <key>vc</key>
+        <dict>
+            <key>bg</key>
+            <string>#00ff00</string>
+            <key>nav_bg</key>
+            <string>#0000ff</string>
+        </dict>
+    </dict>
+</dict>
+</plist>
