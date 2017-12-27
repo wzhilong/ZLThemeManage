@@ -41,7 +41,7 @@
     if ([value hasPrefix:@"#"] ) {
         color = [UIColor colorWithHexString:value];
     }else {
-        color = [UIColor colorNamed:value];
+        color = [UIColor redColor];
     }
     return  color;
 }

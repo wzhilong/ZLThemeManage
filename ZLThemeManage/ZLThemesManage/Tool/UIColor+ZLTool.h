@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-
 @interface UIColor (ZLTool)
 
 + (UIColor *) colorWithHexString: (NSString *)color;

@@ -7,7 +7,7 @@
 //
 
 #import "ThemeHandle.h"
-#import <UIKit/UIKit.h>
+
 #import "ZLThemeResourceManage.h"
 @interface ThemeHandle(){
     

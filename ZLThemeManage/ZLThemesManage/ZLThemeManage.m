@@ -62,7 +62,7 @@
 }
 + (void)removeThemeTargetArray:(NSArray *)targetArray{
     for (id target in targetArray) {
-        [ZLThemeManage removeThemeTarget:target];
+        [ZLThemeManage removeTarget:target];
     }
 }
 

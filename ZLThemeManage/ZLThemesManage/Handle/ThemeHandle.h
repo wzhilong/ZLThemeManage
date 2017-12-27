@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#include <UIKit/UIKit.h>
+#import <UIKit/UIKit.h>
 @interface ThemeHandle : NSObject
 
 - (void)handleThemeTarget:(id)target  theme:(NSString *)theme;

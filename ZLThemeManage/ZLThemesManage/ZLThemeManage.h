@@ -33,15 +33,12 @@
 
 + (void)setDelegate:(id<ZLUIKitProtocol>)delegate;
 + (void)addThemeTarget:(id)target ;
-+ (void)removeThemeTarget:(id )target ;
++ (void)removeThemeBlock:(NSObject *)target;
 
 + (void)addThemeTargetArray:(NSArray *)targetArray;
 + (void)removeThemeTargetArray:(NSArray *)targetArray ;
 
 #pragma mark - 指定代码修改
-+ (void)addThemeBlockTargrt:(NSObject*)target block:(void(^)(void))block;
-+ (void)removeThemeBlockTarget:(NSObject*)target;
-
 + (void)changeTheme:(NSString *)theme;
 
 
