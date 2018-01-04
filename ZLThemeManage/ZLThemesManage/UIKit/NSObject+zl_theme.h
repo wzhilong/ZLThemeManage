@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSObject (zl_themeColor)
+@interface NSObject (zl_theme)
 
-@property (nonatomic, copy) void(^zl_setTheme)();
+@property (nonatomic, copy) void(^zl_setTheme)(void);
 
 
 @end

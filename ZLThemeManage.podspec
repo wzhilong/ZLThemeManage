@@ -20,11 +20,26 @@ Pod::Spec.new do |s|
   
   s.source       = { :git => "https://github.com/wzhilong/ZLThemeManage.git", :tag => "0.0.4" }
 
-  s.source_files  = "ZLThemeManage/ZLThemesManage/**/*.*"
+  s.source_files  = "ZLThemeManage/ZLThemesManage/*.{h,m}"
   
   s.public_header_files = "ZLThemeManage/ZLThemesManage/*.h"
 
   s.frameworks = 'Foundation', 'UIKit'
+
+
+  s.subspec 'Handle' do |handle|
+    handle.source_files = "ZLThemesManage/Handle/**/*.*"
+    handle.public_header_files = "ZLThemesManage/handle/*.h"
+    handle.framworks = 'Foundation','UIkit'
+  end 
+  
+
+  s.subspec 'Handle' do |handle|
+    handle.source_files = "ZLThemesManage/Handle/**/*.*"
+    handle.public_header_files = "ZLThemesManage/handle/*.h"
+    handle.framworks = 'Foundation','UIkit'
+  end 
+
 
 
 end

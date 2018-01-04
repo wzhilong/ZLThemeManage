@@ -6,16 +6,23 @@
 //  Copyright © 2017年 zhilong. All rights reserved.
 //
 
-#import "NSObject+zl_themeColor.h"
+#import "NSObject+zl_theme.h"
 #import <objc/runtime.h>
-@implementation NSObject (zl_themeColor)
+@implementation NSObject (zl_theme)
 
+- (id)valueForUndefinedKey:(NSString *)key{
+    return nil;
+}
+- (void)setValue:(id)value forUndefinedKey:(NSString *)key{
+    NSLog(@"UndefinedKey:%@; value:%@",key,value);
+}
 
-- (void)setZl_setTheme:(void (^)())zl_setTheme{
+- (void)setZl_setTheme:(void (^)(void))zl_setTheme
+{
     objc_setAssociatedObject(self, @"zl_setTheme", zl_setTheme, OBJC_ASSOCIATION_COPY);
 }
 
-- (void (^)())zl_setTheme{
+- (void (^)(void))zl_setTheme{
     return objc_getAssociatedObject(self, @"zl_setTheme");
 }
 

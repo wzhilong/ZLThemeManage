@@ -9,9 +9,11 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 @interface ZLThemeResourceManage : NSObject
-+ (instancetype)getInstance;
-+ (instancetype)getInstanceWithFilePath:(NSString *)filePath;
 
+@property (nonatomic, strong) NSString *resFilePath;
+
++ (instancetype)getInstance;
+- (NSDictionary *)getAttributForKeyPath:(NSString *)keyPath;
 - (UIColor *)getColorForKeyPath:(NSString *)keyPath;
 - (UIImage *)getImageForKeyPath:(NSString *)keyPath;
 

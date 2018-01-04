@@ -8,95 +8,117 @@
 
 #import "ZLThemeResourceManage.h"
 #import "UIColor+ZLTool.h"
+#import "NSObject+zl_theme.h"
 @interface ZLThemeResourceManage()
 
 @property (nonatomic, strong) NSDictionary  *themesData;
 @property (nonatomic, strong) NSString *filePath;
-@end
-@implementation ZLThemeResourceManage
 
+@property (nonatomic, strong) NSDictionary *resData;
+@end
+
+
+@implementation ZLThemeResourceManage
 + (instancetype)getInstance{
-    
-    return [ZLThemeResourceManage getInstanceWithFilePath:nil];
-}
-+ (instancetype)getInstanceWithFilePath:(NSString *)filePath{
-    ZLThemeResourceManage *resM = [[ZLThemeResourceManage alloc] init];
-    [resM setFilePath: filePath];
-    [resM readFile];
+     ZLThemeResourceManage *resM = [[ZLThemeResourceManage alloc] init];
     return resM;
 }
 
-
-
-- (void)readFile{
-    if (self.filePath == nil) {
-        self.filePath = [[NSBundle mainBundle] pathForResource:@"zlthemes" ofType:@"plist"];
+#pragma mark  public
+- (NSDictionary *)getAttributForKeyPath:(NSString *)keyPath{
+    NSMutableDictionary *attribute = [NSMutableDictionary dictionary];
+    if (self.themesData!= nil) {
+        NSDictionary *dic = [self.themesData valueForKeyPath:keyPath];
+        [attribute addEntriesFromDictionary:dic];
     }
-    self.themesData = [NSDictionary dictionaryWithContentsOfFile:self.filePath];
+    if (self.resData != nil) {
+        NSDictionary *dic  = [self.resData valueForKeyPath:keyPath];
+        [attribute addEntriesFromDictionary:dic];
+    }
+    [self configValueForDic:attribute];
+    return attribute;
 }
+
 
 - (UIColor *)getColorForKeyPath:(NSString *)keyPath{
     NSString *value =  [self.themesData valueForKeyPath:keyPath];
-    UIColor *color = nil;
-    if ([value hasPrefix:@"#"] ) {
-        color = [UIColor colorWithHexString:value];
-    }else {
-        color = [UIColor redColor];
-    }
+    UIColor *color = [self getColorFromString:value];
     return  color;
 }
 - (UIImage *)getImageForKeyPath:(NSString *)keyPath{
     NSString *value =  [self.themesData valueForKeyPath:keyPath];
-    UIImage *image = nil;
-    if ([value hasPrefix:@"#"] ) {
-//        image = [UIImage colorWithHexString:value];
-    }else {
-        image = [UIImage imageNamed:value];
-    }
+    UIImage *image = [self getImageFromString:value];
     return  image;
 }
 
-//
-//- (NSDictionary *)getTheme:(nonnull NSString *)theme{
-//    return [self.themesData objectForKey:theme];
-//}
-//- (NSDictionary *)getStyle:(NSString *)style theme:(nonnull NSString *)theme{
-//    NSDictionary *dic = [self.themesData objectForKey:theme];
-//    if (dic != nil) {
-//        return  [dic objectForKey:style];
-//    }
-//    return nil;
-//}
-//
-//- (UIColor *)getColor:(nonnull NSString *)name style:(NSString *)style theme:(nonnull NSString *)theme{
-//    NSDictionary *dic = [self.themesData objectForKey:theme];
-//    if (dic != nil) {
-//        NSDictionary *theme =  [dic objectForKey:style];
-//        if (theme!= nil && [theme isKindOfClass:[NSDictionary class]]) {
-//            NSString *colorValue = [theme objectForKey:name];
-//            if (colorValue!=nil && [colorValue isKindOfClass:[NSString class]]) {
-//                return [UIColor redColor];
-//            }
-//        }
-//    }
-//    return nil;
-//}
-//- (UIImage *)getImage:(nonnull NSString *)name style:(NSString *)style theme:(nonnull NSString *)theme{
-//    NSDictionary *dic = [self.themesData objectForKey:theme];
-//    if (dic != nil) {
-//        if (style!= nil) {
-//            NSDictionary *theme =  [dic objectForKey:style];
-//            if (theme!= nil && [theme isKindOfClass:[NSDictionary class]]) {
-//                NSString *ImageName = [theme objectForKey:name];
-//                if (ImageName!=nil && [ImageName isKindOfClass:[NSString class]]) {
-//                    return [UIImage imageNamed:ImageName];
-//                }
-//            }
-//        }
-//        
-//    }
-//    return nil;
-//}
+#pragma mark private
 
+- (void)configValueForDic:(NSDictionary *)dic{
+    for (NSString *key in [dic allKeys]) {
+        id value = [dic objectForKey:key];
+        if ([value isKindOfClass:[NSDictionary class]]) {
+            [self configValueForDic:value];
+        }
+        if ([value isKindOfClass:[NSString class]]) {
+            value = [self getValueFromKey:key StringValue:value];
+            [dic setValue:value forKey:key];
+        }
+    }
+}
+- (id)getValueFromKey:(NSString *)key StringValue:(NSString *)value{
+    if ([value hasPrefix:@"#"] || [key localizedCaseInsensitiveContainsString:@"color"]) {
+        return [UIColor colorWithHexString:value];
+    }
+    if ([value hasPrefix:@"Img_"] && [key localizedCaseInsensitiveContainsString:@"image"]) {
+        return  [UIImage imageNamed:value];
+    }
+    if ([value hasPrefix:@"Font_"] || [key localizedCaseInsensitiveContainsString:@"font"]) {
+        float floatValue = value.floatValue;
+        if (floatValue!=0) {
+            return  [UIFont systemFontOfSize:floatValue];
+        }
+    }
+    return nil;
+}
+
+- (UIImage *)getImageFromString:(NSString *)str{
+    return  [UIImage imageNamed:str];
+}
+- (UIColor *)getColorFromString:(NSString *)str{
+    return  [UIColor whiteColor];
+}
+- (UIFont *)getFontFormString:(NSString *)str{
+    return [UIFont systemFontOfSize:18];
+}
+
+
+
+#pragma mark getter setter
+- (NSString *)filePath{
+    if (_filePath == nil) {
+        self.filePath = [[NSBundle mainBundle] pathForResource:@"zlthemes" ofType:@"plist"];
+        self.themesData = [NSDictionary dictionaryWithContentsOfFile:_filePath];
+    }
+    return _filePath;
+}
+
+
+- (void)setResFilePath:(NSString *)resFilePath{
+    if ([[NSFileManager defaultManager] fileExistsAtPath:resFilePath]) {
+        _filePath = resFilePath;
+    }else{
+        _resFilePath = nil;
+    }
+}
+- (NSDictionary *)resData{
+    if (_resData == nil && self.resFilePath != nil) {
+        if ([[NSFileManager defaultManager] fileExistsAtPath:_resFilePath]) {
+            self.resData = [NSDictionary dictionaryWithContentsOfFile:_resFilePath];
+        }else{
+            self.resFilePath = nil;
+        }
+    }
+    return _resData;
+}
 
 @end

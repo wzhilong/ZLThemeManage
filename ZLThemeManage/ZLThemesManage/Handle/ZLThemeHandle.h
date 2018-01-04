@@ -7,12 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-@interface ThemeHandle : NSObject
+#include <UIKit/UIKit.h>
 
+@interface ZLThemeHandle : NSObject
+@property (nonatomic, strong) NSString  *resPath;
 - (void)handleThemeTarget:(id)target  theme:(NSString *)theme;
-
-- (instancetype)initWithFilePath:(NSString *)filePath;
 
 - (UIColor *)getColorForKeyPath:(NSString *)keyPath;
 - (UIImage *)getImageForKeyPath:(NSString *)keyPath;

@@ -7,9 +7,9 @@
 //
 
 #import "ZLThemeManage.h"
-#import "ThemeHandle.h"
+#import "ZLThemeHandle.h"
 
-#import "NSObject+zl_themeColor.h"
+#import "NSObject+zl_theme.h"
 
 #pragma mark ZLThemeManage() 类别
 
@@ -17,8 +17,7 @@
 
 @property (nonatomic, strong) NSMutableSet *themeBlocksTarget;
 @property (nonatomic, strong) NSMutableSet *targetSet;
-@property (nonatomic, strong) ThemeHandle *ThemeHandle;
-@property (nonatomic, strong) ThemeHandle *custThemeHandle;
+@property (nonatomic, strong) ZLThemeHandle *themeHandle;
 @property (nonatomic, strong) NSString * zl_theme;
 
 @end
@@ -35,7 +34,6 @@
             manage = [[ZLThemeManage alloc] init];
             manage.themeBlocksTarget = [[NSMutableSet alloc] init];
             manage.targetSet = [[NSMutableSet alloc] init];
-            manage.ThemeHandle = [[ThemeHandle alloc] init];
             manage.theme = [NSString stringWithFormat:@"normal"];
         }
     });
@@ -62,7 +60,7 @@
 }
 + (void)removeThemeTargetArray:(NSArray *)targetArray{
     for (id target in targetArray) {
-        [ZLThemeManage removeTarget:target];
+        [ZLThemeManage removeThemeTarget:target];
     }
 }
 
@@ -97,12 +95,12 @@
 #pragma mark 私有方法
 - (void)setTheme:(NSString *)theme{
     for (id target in self.targetSet) {
-        [self.ThemeHandle handleThemeTarget:target theme:theme];
+        [self.themeHandle handleThemeTarget:target theme:theme];
         if (self.delegate != nil) {
             [self.delegate themeTarget:target theme:theme imageForm:^UIImage *(NSString *path) {
-                return [self.custThemeHandle getImageForKeyPath:path];
+                return [self.themeHandle getImageForKeyPath:path];
             } color:^UIColor *(NSString *path) {
-                return  [self.custThemeHandle getColorForKeyPath:path];
+                return  [self.themeHandle getColorForKeyPath:path];
             }];
         }
     }
@@ -114,12 +112,12 @@
 }
 
 - (void)configTargetTheme:(NSObject *)target{
-    [self.ThemeHandle handleThemeTarget:target theme:self.zl_theme ];
+    [self.themeHandle handleThemeTarget:target theme:self.zl_theme ];
     if (self.delegate != nil) {
         [self.delegate themeTarget:target theme:self.zl_theme imageForm:^UIImage *(NSString *path) {
-            return [self.custThemeHandle getImageForKeyPath:path];
+            return [self.themeHandle getImageForKeyPath:path];
         } color:^UIColor *(NSString *path) {
-            return  [self.custThemeHandle getColorForKeyPath:path];
+            return  [self.themeHandle getColorForKeyPath:path];
         }];
     }
     if (target!= nil && target.zl_setTheme!= nil) {
@@ -129,12 +127,19 @@
 
 
 #pragma mark  getter setter
-- (ThemeHandle *)custThemeHandle{
-    if (_custThemeHandle == nil && self.delegate != nil ) {
-        self.custThemeHandle = [[ThemeHandle alloc] initWithFilePath:[self.delegate zlThemeResFilePath]];
+- (ZLThemeHandle *)themeHandle{
+    if (_themeHandle == nil) {
+        _themeHandle = [[ZLThemeHandle alloc] init];
     }
-    return _custThemeHandle;
+    if (self.delegate != nil ) {
+        NSString *filePath = [self.delegate zlThemeResFilePath];
+        if (![filePath isEqualToString:_themeHandle.resPath]) {
+            _themeHandle.resPath = filePath;
+        }
+    }
+    return _themeHandle;
 }
+
 - (NSString *)zl_theme{
     if (_zl_theme == nil) {
         return  @"normal";
